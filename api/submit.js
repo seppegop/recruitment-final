@@ -30,7 +30,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { eligibility, q1, q2, q3, q4_role, q4_industry, q4_employer, q5, q6, q7 } = req.body;
+  const { eligibility, full_name, email, q1, q2, q3, q4_role, q4_industry, q4_employer, q5, q6, q7 } = req.body;
   const id = randomUUID();
   const created_at = new Date().toISOString();
   const allEligible = eligibility && eligibility.length === 5 && eligibility.every(Boolean);
@@ -47,6 +47,8 @@ export default async function handler(req, res) {
   if (WEBHOOK) {
     const sheetPayload = {
       id, created_at, eligible: true,
+      full_name: full_name || '',
+      email: email || '',
       segment_label: segmentLabel,
       experience_segment: exp.segment,
       usage_segment: usage,

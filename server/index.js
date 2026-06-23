@@ -11,7 +11,7 @@ const __dirname = dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3001;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'screener-admin-2024';
-const GOOGLE_SHEET_WEBHOOK = process.env.GOOGLE_SHEET_WEBHOOK || 'https://script.google.com/macros/s/AKfycbxBiLQBHviqXYH7TyR_3JBXJdxukhBWS2n50yfGuYjipoq1JmYPmpBtyrlyGT4bfBwedg/exec';
+const GOOGLE_SHEET_WEBHOOK = process.env.GOOGLE_SHEET_WEBHOOK || 'https://script.google.com/macros/s/AKfycbzX5vU8QgC7Fs1-6JvZXfu1VMLLoJyil1erXIvZeXxEtbWx6R9jvVRkhv0xqgpe2sayK/exec';
 
 app.use(cors());
 app.use(express.json());
@@ -84,7 +84,7 @@ function requireAdmin(req, res, next) {
 }
 
 app.post('/api/submit', (req, res) => {
-  const { eligibility, q1, q2, q3, q4_role, q4_industry, q4_employer, q5, q6, q7 } = req.body;
+  const { eligibility, full_name, email, q1, q2, q3, q4_role, q4_industry, q4_employer, q5, q6, q7 } = req.body;
 
   const id = randomUUID();
   const created_at = new Date().toISOString();
@@ -123,6 +123,8 @@ app.post('/api/submit', (req, res) => {
   if (GOOGLE_SHEET_WEBHOOK) {
     const sheetPayload = {
       id, created_at, eligible: true,
+      full_name: full_name || '',
+      email: email || '',
       segment_label: segmentLabel,
       experience_segment: exp.segment,
       usage_segment: usage,

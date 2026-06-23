@@ -17,6 +17,8 @@ export default function ScreenerForm() {
     q1: '',
     q2: '',
     q3: '',
+    full_name: '',
+    email: '',
     q4_role: '',
     q4_industry: '',
     q4_employer: '',
@@ -56,6 +58,9 @@ export default function ScreenerForm() {
     }
 
     if (stepIndex === 2) {
+      if (!formData.full_name.trim()) errs.full_name = 'Please enter your full name.';
+      if (!formData.email.trim()) errs.email = 'Please enter your e-mail.';
+      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) errs.email = 'Please enter a valid e-mail address.';
       if (!formData.q4_role.trim()) errs.q4_role = 'Please enter your role.';
       if (!formData.q4_industry.trim()) errs.q4_industry = 'Please enter your industry.';
       if (formData.q5.length === 0 && !formData.q5_other.trim()) {
@@ -119,6 +124,8 @@ export default function ScreenerForm() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           eligibility: formData.eligibility,
+          full_name: formData.full_name,
+          email: formData.email,
           q1: formData.q1,
           q2: formData.q2,
           q3: formData.q3,

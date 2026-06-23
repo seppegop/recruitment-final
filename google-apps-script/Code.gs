@@ -6,6 +6,8 @@
 const HEADERS = [
   'ID',
   'Timestamp',
+  'Full Name',
+  'E-mail',
   'Eligible',
   'Segment Label',
   'Experience Segment',
@@ -44,6 +46,8 @@ function doPost(e) {
     const row = [
       data.id || '',
       data.created_at || '',
+      data.full_name || '',
+      data.email || '',
       data.eligible ? 'Yes' : 'No',
       data.segment_label || '',
       data.experience_segment || '',
@@ -106,20 +110,22 @@ function doGet(e) {
       var obj = {};
       obj.id = row[0];
       obj.created_at = row[1] instanceof Date ? row[1].toISOString() : String(row[1]);
-      obj.eligible = row[2] === 'Yes' ? 1 : 0;
-      obj.segment_label = row[3];
-      obj.experience_segment = row[4];
-      obj.usage_segment = row[5];
-      obj.low_experience_flag = row[6] === 'Yes' ? 1 : 0;
-      obj.q1 = row[7];
-      obj.q2 = row[8];
-      obj.q3 = row[9];
-      obj.q4_role = row[10];
-      obj.q4_industry = row[11];
-      obj.q4_employer = row[12];
-      obj.q5 = row[13];
-      obj.q6 = row[14];
-      obj.q7 = row[15];
+      obj.full_name = row[2];
+      obj.email = row[3];
+      obj.eligible = row[4] === 'Yes' ? 1 : 0;
+      obj.segment_label = row[5];
+      obj.experience_segment = row[6];
+      obj.usage_segment = row[7];
+      obj.low_experience_flag = row[8] === 'Yes' ? 1 : 0;
+      obj.q1 = row[9];
+      obj.q2 = row[10];
+      obj.q3 = row[11];
+      obj.q4_role = row[12];
+      obj.q4_industry = row[13];
+      obj.q4_employer = row[14];
+      obj.q5 = row[15];
+      obj.q6 = row[16];
+      obj.q7 = row[17];
       rows.push(obj);
     }
 

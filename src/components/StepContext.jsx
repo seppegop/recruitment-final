@@ -13,6 +13,43 @@ export default function StepContext({ formData, updateField, errors }) {
     <div>
       <fieldset className="form-group">
         <legend>
+          Your contact details
+          <span className="required-mark" aria-hidden="true">*</span>
+        </legend>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <div>
+            <label htmlFor="full_name" style={{ fontSize: '0.88rem', fontWeight: 500 }}>
+              Full Name <span className="required-mark" aria-hidden="true">*</span>
+            </label>
+            <input
+              type="text"
+              id="full_name"
+              value={formData.full_name}
+              onChange={e => updateField('full_name', e.target.value)}
+              placeholder="e.g. Jane Doe"
+              aria-required="true"
+            />
+            {errors.full_name && <p className="error-message" role="alert">{errors.full_name}</p>}
+          </div>
+          <div>
+            <label htmlFor="email" style={{ fontSize: '0.88rem', fontWeight: 500 }}>
+              E-mail <span className="required-mark" aria-hidden="true">*</span>
+            </label>
+            <input
+              type="email"
+              id="email"
+              value={formData.email}
+              onChange={e => updateField('email', e.target.value)}
+              placeholder="e.g. jane@example.com"
+              aria-required="true"
+            />
+            {errors.email && <p className="error-message" role="alert">{errors.email}</p>}
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset className="form-group">
+        <legend>
           Q4. Where do you currently work?
           <span className="required-mark" aria-hidden="true">*</span>
         </legend>
