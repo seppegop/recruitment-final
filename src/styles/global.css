@@ -201,6 +201,7 @@ fieldset.form-group {
 }
 
 input[type="text"],
+input[type="email"],
 textarea {
   width: 100%;
   padding: 10px 12px;
@@ -213,6 +214,7 @@ textarea {
 }
 
 input[type="text"]:focus,
+input[type="email"]:focus,
 textarea:focus {
   outline: 2px solid var(--color-focus);
   outline-offset: 1px;
