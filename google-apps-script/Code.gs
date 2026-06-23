@@ -1,6 +1,7 @@
 // Google Apps Script — paste this into Extensions > Apps Script in your Google Sheet.
 // Then deploy as a web app (Execute as: Me, Access: Anyone).
 // Copy the deployment URL and set it as GOOGLE_SHEET_WEBHOOK in your .env file.
+// IMPORTANT: After updating this code, create a NEW deployment version in Apps Script.
 
 const HEADERS = [
   'ID',
@@ -19,6 +20,13 @@ const HEADERS = [
   'Q5 — AI Tools Used',
   'Q6 — Ideation Episode',
   'Q7 — Willing to Screen-Share',
+];
+
+const FIELD_KEYS = [
+  'id', 'created_at', 'eligible', 'segment_label',
+  'experience_segment', 'usage_segment', 'low_experience_flag',
+  'q1', 'q2', 'q3', 'q4_role', 'q4_industry', 'q4_employer',
+  'q5', 'q6', 'q7',
 ];
 
 function doPost(e) {
@@ -64,8 +72,63 @@ function doPost(e) {
   }
 }
 
-// GET handler for testing — visit the URL in a browser to verify deployment
-function doGet() {
+function doGet(e) {
+  var params = e ? e.parameter : {};
+
+  // Read action: return all rows as JSON (requires admin key)
+  if (params.action === 'read') {
+    var adminKey = PropertiesService.getScriptProperties().getProperty('ADMIN_KEY');
+    if (!adminKey) {
+      // Fallback: accept any key if ADMIN_KEY is not set in script properties
+      // To secure this, go to Apps Script > Project Settings > Script Properties and add ADMIN_KEY
+    } else if (params.key !== adminKey) {
+      return ContentService
+        .createTextOutput(JSON.stringify({ status: 'error', message: 'Unauthorized' }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Sheet1')
+                || SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
+
+    var lastRow = sheet.getLastRow();
+    if (lastRow <= 1) {
+      return ContentService
+        .createTextOutput(JSON.stringify({ status: 'ok', rows: [] }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    var dataRange = sheet.getRange(2, 1, lastRow - 1, HEADERS.length);
+    var values = dataRange.getValues();
+    var rows = [];
+
+    for (var i = 0; i < values.length; i++) {
+      var row = values[i];
+      var obj = {};
+      obj.id = row[0];
+      obj.created_at = row[1] instanceof Date ? row[1].toISOString() : String(row[1]);
+      obj.eligible = row[2] === 'Yes' ? 1 : 0;
+      obj.segment_label = row[3];
+      obj.experience_segment = row[4];
+      obj.usage_segment = row[5];
+      obj.low_experience_flag = row[6] === 'Yes' ? 1 : 0;
+      obj.q1 = row[7];
+      obj.q2 = row[8];
+      obj.q3 = row[9];
+      obj.q4_role = row[10];
+      obj.q4_industry = row[11];
+      obj.q4_employer = row[12];
+      obj.q5 = row[13];
+      obj.q6 = row[14];
+      obj.q7 = row[15];
+      rows.push(obj);
+    }
+
+    return ContentService
+      .createTextOutput(JSON.stringify({ status: 'ok', rows: rows }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  // Default: health check
   return ContentService
     .createTextOutput(JSON.stringify({ status: 'ok', message: 'Screener webhook is live' }))
     .setMimeType(ContentService.MimeType.JSON);
