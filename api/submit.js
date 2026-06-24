@@ -25,32 +25,6 @@ function classifyUsage(q2, q3) {
   return usageLabelNames[higher] || null;
 }
 
-async function postToGoogleSheet(url, payload, retries = 3) {
-  const body = JSON.stringify(payload);
-  let currentUrl = url;
-
-  for (let i = 0; i < retries; i++) {
-    const response = await fetch(currentUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
-      body,
-      redirect: 'manual',
-    });
-
-    if (response.status >= 300 && response.status < 400) {
-      const location = response.headers.get('location');
-      if (location) {
-        currentUrl = location;
-        continue;
-      }
-    }
-
-    return await response.text();
-  }
-
-  throw new Error('Too many redirects');
-}
-
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -88,8 +62,14 @@ export default async function handler(req, res) {
       q7: q7 || '',
     };
     try {
-      const result = await postToGoogleSheet(WEBHOOK, sheetPayload);
-      console.log('Google Sheet response:', result);
+      const response = await fetch(WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(sheetPayload),
+        redirect: 'follow',
+      });
+      const text = await response.text();
+      console.log('Google Sheet response:', response.status, text);
     } catch (err) {
       console.error('Google Sheet webhook error:', err.message);
     }
