@@ -11,7 +11,7 @@ const __dirname = dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3001;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'screener-admin-2024';
-const GOOGLE_SHEET_WEBHOOK = process.env.GOOGLE_SHEET_WEBHOOK || 'https://script.google.com/macros/s/AKfycbzX5vU8QgC7Fs1-6JvZXfu1VMLLoJyil1erXIvZeXxEtbWx6R9jvVRkhv0xqgpe2sayK/exec';
+const GOOGLE_SHEET_WEBHOOK = process.env.GOOGLE_SHEET_WEBHOOK || 'https://script.google.com/macros/s/AKfycbyiqj5xZezOvMJPp6_s2NZeMa9pePoqrreS8D6UjJ3F87BP5AZ4bqt8ppnybq36eWhhwA/exec';
 
 app.use(cors());
 app.use(express.json());
